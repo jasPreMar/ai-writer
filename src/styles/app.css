@@ -1,0 +1,52 @@
+/* .App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .App.fullscreen .LibraryPane {
+    display: none;
+  }
+  
+  .main {
+    display: flex;
+    flex-grow: 1;
+  }
+   */
+
+   .App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .App.fullscreen .LibraryPane {
+    display: none;
+  }
+  
+  .main {
+    display: flex;
+    flex-grow: 1;
+  }
+  
+  .text-editor-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+  
+  .TextEditor {
+    flex-grow: 1;
+  }
+  
+  .WordAndCharacterCount {
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    padding-left: 1rem;
+  }
+  

@@ -1,0 +1,23 @@
+{
+    "env": {
+      "browser": true
+    },
+    "extends": [
+      "airbnb",
+      "plugin:react/recommended",
+      "plugin:react-hooks/recommended",
+      "plugin:jsx-a11y/recommended",
+      "prettier"
+    ],
+    "plugins": ["prettier"],
+    "rules": {
+      "prettier/prettier": ["error"],
+      "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
+      "react/react-in-jsx-scope": "off"
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
+  }
