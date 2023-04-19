@@ -1,4 +1,4 @@
-// The toolbar component is the top bar of the app where users can access various functions, such as opening/closing the library pane, navigating back and forward, and toggling fullscreen mode. It also contains the current file dropdown, which allows users to switch between documents.
+// desc: This file contains the toolbar component, which is the top bar of the app where users can access various functions, such as opening/closing the library pane, and toggling fullscreen mode. It also contains the current file dropdown, which allows users to switch between documents.
 
 // UI and Visual Elements:
 
@@ -42,7 +42,6 @@
 
   // 8. Selecting style check options: The style check dropdown group allows a user to select style check options when clicked.
 
-// Toolbar.js
 import React from 'react';
 
 import CurrentFileModal from './CurrentFileModal';
@@ -59,7 +58,6 @@ const Toolbar = ({
   toggleLibraryPane,
   currentFile,
   toggleFocusMode,
-  togglePreviewOverlay,
   toggleCurrentFileModal,
   isCurrentFileModalOpen,
   files,
@@ -67,10 +65,27 @@ const Toolbar = ({
   isEditorSettingsDropdownOpen,
   toggleEditorSettingsDropdown,
   toggleSyntaxHighlighting,
-  toggleStyleCheck
+  toggleStyleCheck,
+  togglePreview, // Add the togglePreview prop
+  isToolbarVisible, // Add the isToolbarVisible prop
+  setIsToolbarVisible // Add the setIsToolbarVisible prop
 }) => {
+  const handleMouseEnter = () => {
+    setIsToolbarVisible(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsToolbarVisible(false);
+  };
+
   return (
-    <div className="Toolbar flex justify-between p-4 border-b bg-gray-100">
+    <div
+      className={`Toolbar fixed top-0 left-0 right-0 bg-gray-800 text-white flex items-center justify-between h-12 px-4 transition-transform duration-300 ${
+        isToolbarVisible ? '' : 'hidden-toolbar'
+      }`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="left">
         <button
           className="library-btn mx-1 px-2 py-1 rounded transition-colors hover:bg-gray-300"
@@ -103,7 +118,7 @@ const Toolbar = ({
         </button>
         <button
           className="preview-btn mx-1 px-2 py-1 rounded transition-colors hover:bg-gray-300"
-          onClick={togglePreviewOverlay}
+          onClick={togglePreview}
         >
           <Play size={18} />
         </button>

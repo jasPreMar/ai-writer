@@ -1,52 +1,96 @@
-/* .App {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
+.Light {
+  /* Light appearance styles */
+  --bg-color: #f8f8f8;
+  --text-color: #333;
+  --icon-color: #555;
+}
 
-  .App.fullscreen .LibraryPane {
-    display: none;
-  }
-  
-  .main {
-    display: flex;
-    flex-grow: 1;
-  }
-   */
+.Dark {
+  /* Dark appearance styles */
+  --bg-color: #2c2c2c;
+  --text-color: #f8f8f8;
+  --icon-color: #aaa;
+}
 
-   .App {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-  }
-  
-  .App.fullscreen .LibraryPane {
-    display: none;
-  }
-  
-  .main {
-    display: flex;
-    flex-grow: 1;
-  }
-  
-  .text-editor-container {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-  }
-  
-  .TextEditor {
-    flex-grow: 1;
-  }
-  
-  .WordAndCharacterCount {
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #f8f9fa;
-    padding-left: 1rem;
-  }
-  
+.App {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.App.fullscreen .LibraryPane {
+  display: none;
+}
+
+.main {
+  display: flex;
+  flex-grow: 1;
+}
+
+.text-editor-container {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.TextEditor {
+  flex-grow: 1;
+}
+
+.WordAndCharacterCount {
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+  padding-left: 1rem;
+}
+
+.hidden-toolbar {
+  transform: translateY(-100%);
+}
+
+.App {
+  /* Use the CSS variables defined above for background and text colors */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ... rest of the styles ... */
+
+.LibraryPane {
+  /* Use the CSS variables defined above for background and text colors */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* ... rest of the styles ... */
+
+.TextEditor {
+  /* Use the CSS variables defined above for background and text colors */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* ... rest of the styles ... */
+
+.WordAndCharacterCount {
+  /* Use the CSS variables defined above for background and text colors */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 1rem;
+}
+
+.block {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
