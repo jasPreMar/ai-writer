@@ -1,12 +1,10 @@
 .Light {
-  /* Light appearance styles */
   --bg-color: #f8f8f8;
   --text-color: #333;
   --icon-color: #555;
 }
 
 .Dark {
-  /* Dark appearance styles */
   --bg-color: #2c2c2c;
   --text-color: #f8f8f8;
   --icon-color: #aaa;
@@ -52,7 +50,6 @@
 }
 
 .App {
-  /* Use the CSS variables defined above for background and text colors */
   background-color: var(--bg-color);
   color: var(--text-color);
   display: flex;
@@ -61,26 +58,17 @@
   overflow: hidden;
 }
 
-/* ... rest of the styles ... */
-
 .LibraryPane {
-  /* Use the CSS variables defined above for background and text colors */
   background-color: var(--bg-color);
   color: var(--text-color);
 }
-
-/* ... rest of the styles ... */
 
 .TextEditor {
-  /* Use the CSS variables defined above for background and text colors */
   background-color: var(--bg-color);
   color: var(--text-color);
 }
 
-/* ... rest of the styles ... */
-
 .WordAndCharacterCount {
-  /* Use the CSS variables defined above for background and text colors */
   background-color: var(--bg-color);
   color: var(--text-color);
   height: 30px;

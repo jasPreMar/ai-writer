@@ -11,35 +11,9 @@ const LibraryPane = ({
   setAppearance
 }) => {
 
-  // const [appearance, setAppearance] = useState('System');
-
-  // useEffect(() => {
-  //   const storedAppearance = localStorage.getItem('appearance');
-  //   if (storedAppearance) {
-  //     setAppearance(storedAppearance);
-  //   } else {
-  //     const systemAppearance = window.matchMedia('(prefers-color-scheme: Dark)').matches
-  //       ? 'Dark'
-  //       : 'Light';
-  //     setAppearance('systemAppearance');
-  //     localStorage.setItem('appearance', systemAppearance);
-  //   }
-  // }, []);
-
   const changeAppearance = (newAppearance) => {
     setAppearance(newAppearance);
     localStorage.setItem('appearance', newAppearance);
-
-    // if (newAppearance === 'Light' || newAppearance === 'Dark') {
-    //   document.documentElement.classList.add(newAppearance);
-    //   document.documentElement.classList.remove(newAppearance === 'Light' ? 'Dark' : 'Light');
-    //   } else {
-    //     const systemAppearance = window.matchMedia('(prefers-color-scheme: Dark)').matches
-    //       ? 'Dark'
-    //       : 'Light';
-    //     document.documentElement.classList.add(systemAppearance);
-    //     document.documentElement.classList.remove(systemAppearance === 'Light' ? 'Dark' : 'Light');
-    //   }
   };
   
   return (
