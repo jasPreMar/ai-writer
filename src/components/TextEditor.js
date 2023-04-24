@@ -77,7 +77,7 @@ const TextEditor = ({
   };
 
   return (
-    <div className="TextEditor flex-1 p-4">
+    <div className="TextEditor">
       {isPreview ? (
         <ReactMarkdown>{content}</ReactMarkdown>
       ) : (

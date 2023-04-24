@@ -13,7 +13,7 @@ function App() {
 
   // The next lines define state variables and their respective setters using the useState hook. The useState hook takes an initial value as an argument and returns an array containing the state variable and its setter. A state variable is a variable that can be changed by the application. A setter is a function that updates the state variable.
 
-  const [isLibraryPaneVisible, setIsLibraryPaneVisible] = useState(true);
+  const [isLibraryPaneVisible, setIsLibraryPaneVisible] = useState(false);
   const [isCurrentFileModalOpen, setIsCurrentFileModalOpen] = useState(false);
   const [isEditorSettingsDropdownOpen, setIsEditorSettingsDropdownOpen] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
@@ -30,7 +30,7 @@ function App() {
     } else {
       setAppearance('System');
     }
-    
+
     const handleSystemColorChange = (e) => {
       if (appearance === 'System') {
         setAppearance(e.matches ? 'Dark' : 'Light');
