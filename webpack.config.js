@@ -9,6 +9,8 @@ module.exports = {
     clean: true,
   },
   devServer: {
+    host: '0.0.0.0', // This will allow connections from any host
+    allowedHosts: 'all', // Allowing all hosts
     static: {
       directory: path.join(__dirname, 'dist'),
     },
