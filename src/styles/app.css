@@ -11,6 +11,8 @@
 }
 
 .App {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -36,10 +38,42 @@
 .TextEditor {
   flex-grow: 1;
   font-family: Roboto Mono;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 400;
-  line-height: 27px;
+  line-height: 1.7em;
   letter-spacing: 0.01em;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 62px 44px 0 44px;
+  max-width: 728px;
+  min-width: 45ch;
+}
+
+@media (min-width: 512px) {
+  .text-editor-container .TextEditor {
+    padding: 62px 56px 0 56px;
+  }
+}
+
+@media (min-width: 780px) {
+  .text-editor-container .TextEditor {
+    padding: 62px 80px 0 80px;
+  }
+}
+
+@media (min-width: 888px) {
+  .text-editor-container .TextEditor {
+    padding: 62px 90px 0 90px;
+  }
+}
+
+@media (min-width: 1254px) {
+  .text-editor-container .TextEditor {
+    padding: 62px 0 0 0;
+    max-width: 1208px;
+    font-size: 21px;
+    line-height: 36.5px;
+  }
 }
 
 .WordAndCharacterCount {
@@ -55,24 +89,9 @@
   transform: translateY(-100%);
 }
 
-.App {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .LibraryPane {
   background-color: var(--bg-color);
   color: var(--text-color);
-}
-
-.TextEditor {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  padding: 32px 16px 0 16px;
 }
 
 .WordAndCharacterCount {
