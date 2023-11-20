@@ -215,8 +215,15 @@
           throw new Error('Network response was not ok.');
         }
 
-        const data = await response.json();
-        return data.choices[0].text; // Assuming the OpenAI response format
+        const data = await response.text();
+
+        try {
+          const jsonData = JSON.parse(data);
+          return jsonData.choices[0].text; // Assuming the OpenAI response format
+        } catch (error) {
+          console.error('Invalid JSON:', data);
+          throw error; // Re-throw the error to be handled by the calling function
+        }
       } catch (error) {
         console.error('There has been a problem with your fetch operation:', error);
       }
