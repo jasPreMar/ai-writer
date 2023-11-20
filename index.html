@@ -203,7 +203,7 @@
 
     async function getAutocompleteText(promptText) {
       try {
-        const response = await fetch('/api/autocomplete', {
+        const response = await fetch('api/autocomplete', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -216,6 +216,7 @@
         }
 
         const data = await response.text();
+        console.log(data); // Log the server response
 
         try {
           const jsonData = JSON.parse(data);
