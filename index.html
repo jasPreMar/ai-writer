@@ -251,4 +251,50 @@
     // Show autocomplete suggestion
     async function showAutocomplete() {
       const paragraphs = document.querySelectorAll('.editor p');
-      
+      let promptText = '';
+      paragraphs.forEach(p => {
+        promptText += p.textContent;
+      });
+      const autocompleteText = await getAutocompleteText(promptText); // Pass promptText as an argument
+      const activeParagraph = document.querySelector('.editor p.active');
+      if (activeParagraph) {
+        activeParagraph.innerHTML += `<span class="autocomplete">${autocompleteText}</span>`;
+        setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+      }
+    }
+
+    // Hide autocomplete suggestion
+    function hideAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.remove();
+      });
+    }
+
+    // Confirm autocomplete suggestion
+    function confirmAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.classList.remove('autocomplete');
+        element.style.color = 'inherit';
+      });
+      commandPressed = false;
+    }
+
+    // Delete autocomplete suggestion
+    function deleteAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.remove();
+      });
+    }
+
+    // Cancel autocomplete suggestion
+    function cancelAutocomplete() {
+      deleteAutocomplete();
+      commandPressed = false;
+    }
+  </script>
+</body>
+
+</html>
