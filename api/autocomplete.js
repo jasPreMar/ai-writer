@@ -17,11 +17,11 @@ module.exports = async (req, res) => {
             max_tokens: 20,
         });
 
-        console.log('OpenAI API Response:', completion);  // Log the entire OpenAI API response
-        console.log('Completion Data:', completion.data);  // Log the completion data
-        console.log(completion);
+        console.log('OpenAI API Response:', completion);
+        const generatedText = completion.choices[0].text;  // Correctly access the generated text
+        console.log('Generated Text:', generatedText);
         
-        res.status(200).json(completion.data);
+        res.status(200).json({ text: generatedText });  // Send the generated text in a JSON object
     } catch (error) {
         console.error('Error:', error);  // Log any errors
         res.status(500).json({ error: error.message });
