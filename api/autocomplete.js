@@ -17,6 +17,8 @@ module.exports = async (req, res) => {
             max_tokens: 20,
         });
 
+        console.log('OpenAI API Response:', completion);  // Log the entire OpenAI API response
+        console.log('Completion Data:', completion.data);  // Log the completion data
         console.log(completion);
         
         res.status(200).json(completion.data);
