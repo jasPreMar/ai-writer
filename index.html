@@ -202,6 +202,12 @@
     }
 
     async function getAutocompleteText(promptText) {
+      // Collect all paragraphs from the editor
+      const paragraphs = Array.from(document.querySelectorAll('.editor p'));
+
+      // Combine all paragraph texts into a single string
+      const promptText = paragraphs.map(p => p.textContent).join('\n');
+
       try {
         const response = await fetch('/api/autocomplete', {
           method: 'POST',
