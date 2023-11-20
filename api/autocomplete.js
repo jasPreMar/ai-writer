@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
 
     try {
         const { prompt } = req.body;
-        const completion = await openai.completions.create({
+        const completion = await openai.createCompletion({
             model: 'gpt-3.5-turbo-instruct',
             prompt: prompt,
             max_tokens: 20,
