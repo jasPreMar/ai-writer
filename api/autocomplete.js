@@ -17,7 +17,8 @@ module.exports = async (req, res) => {
             max_tokens: 20,
         });
 
-        console.log('Completion:', completion.data);  // Log the completion data
+        console.log(completion);
+        
         res.status(200).json(completion.data);
     } catch (error) {
         console.error('Error:', error);  // Log any errors
