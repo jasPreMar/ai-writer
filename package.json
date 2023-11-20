@@ -1,0 +1,23 @@
+{
+  "name": "ai-writer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasPreMar/ai-writer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jasPreMar/ai-writer/issues"
+  },
+  "homepage": "https://github.com/jasPreMar/ai-writer#readme",
+  "dependencies": {
+    "openai": "^4.19.0"
+  }
+}

@@ -201,9 +201,27 @@
       editor.appendChild(paragraph);
     }
 
-    async function getAutocompleteText() {
-      return "generated text will go here. ";
+    async function getAutocompleteText(promptText) {
+      try {
+        const response = await fetch('/api/autocomplete', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ prompt: promptText }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok.');
+        }
+
+        const data = await response.json();
+        return data.choices[0].text; // Assuming the OpenAI response format
+      } catch (error) {
+        console.error('There has been a problem with your fetch operation:', error);
+      }
     }
+
 
     // Function to handle command key for autocomplete
     let commandPressed = false;
