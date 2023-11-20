@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Typewriter Text Editor</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap">
+  <style>
+    body {
+      font-size: 18px;
+      background-color: #1B1A1B;
+      color: #707070;
+    }
+
+    body.dark-mode {
+      background-color: #1B1A1B;
+      color: #707070;
+    }
+
+    body.light-mode {
+      background-color: #F7F7F7;
+      color: #C6C4C3;
+    }
+
+    .editor {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 708px;
+      margin: 0 auto;
+      color: #707070;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 1rem;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      padding: 0 1rem;
+      overflow: hidden;
+      text-align: left;
+      overflow: hidden;
+    }
+
+    .editor::-webkit-scrollbar {
+      display: none;
+    }
+
+    .editor p {
+      margin: 0;
+      padding: 0.5rem 0;
+      line-height: 1.7;
+      min-height: 1.7rem;
+    }
+
+    .editor p.active {
+      color: #CCCCCC;
+    }
+
+    .autocomplete {
+      color: rgba(112, 112, 112, 0.5);
+    }
+
+    /* Light Mode styles */
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: #F7F7F7;
+        color: #C6C4C3;
+      }
+
+      .editor {
+        color: #C6C4C3;
+        background-color: #F7F7F7;
+      }
+
+      .editor p.active {
+        color: #1a1a1a;
+      }
+
+      .autocomplete {
+        color: rgba(0, 0, 0, 0.5);
+      }
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div id="editor" class="editor" contenteditable="true">
+    <!-- Dynamic content will be inserted here -->
+  </div>
+
+  <script>
+    // Detect user's preferred color scheme
+    let userPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let userPrefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+
+    // Apply dark mode styles if user prefers dark mode
+    if (userPrefersDark) {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Apply light mode styles if user prefers light mode
+    if (userPrefersLight) {
+      document.body.classList.add('light-mode');
+    }
+
+    // Listen for changes in the user's preferred color scheme
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+      const newColorScheme = e.matches ? "dark" : "light";
+      document.body.classList.remove('dark-mode', 'light-mode');
+      document.body.classList.add(`${newColorScheme}-mode`);
+    });
+
+    const editor = document.getElementById('editor');
+    let observer = new MutationObserver(centerActiveLine);
+    observer.observe(editor, { childList: true, subtree: true });
+
+    document.addEventListener('selectionchange', () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const activeNode = range.startContainer.parentNode;
+        if (activeNode.nodeName === 'P') {
+          updateActiveParagraph(activeNode);
+        }
+      }
+    });
+
+    editor.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !commandPressed) {
+        e.preventDefault(); // Prevent the default enter key behavior
+        const activeParagraph = document.querySelector('.editor p.active');
+        const newParagraph = document.createElement('p');
+        newParagraph.textContent = '\u200B'; // Insert zero-width space
+        if (activeParagraph.nextSibling) {
+          editor.insertBefore(newParagraph, activeParagraph.nextSibling);
+        } else {
+          editor.appendChild(newParagraph);
+        }
+        updateActiveParagraph(newParagraph); // Set the new paragraph to active
+        setCursorToEnd(newParagraph);
+      }
+    });
+
+    editor.addEventListener('click', () => {
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        const activeNode = range.startContainer.parentNode;
+        if (activeNode.nodeName === 'P') {
+          updateActiveParagraph(activeNode);
+        }
+      }
+    });
+
+    function updateActiveParagraph(activeNode) {
+      // Remove active class from all paragraphs
+      document.querySelectorAll('.editor p').forEach(p => {
+        p.classList.remove('active');
+      });
+      // Add active class to the selected paragraph
+      activeNode.classList.add('active');
+      // Center the active line
+      centerActiveLine(activeNode);
+    }
+
+    function centerActiveLine(activeNode) {
+      if (activeNode && activeNode.nodeType === Node.ELEMENT_NODE) {
+        const rect = activeNode.getBoundingClientRect();
+        const editorRect = editor.getBoundingClientRect();
+
+        // Calculate the offset to center the line
+        const offset = rect.top - editorRect.top - editorRect.height / 2 + rect.height / 2;
+
+        // Scroll the editor
+        editor.style.transform = `translateY(${-offset}px)`;
+      }
+    }
+
+    function setCursorToEnd(element) {
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(element);
+      range.collapse(false); // Collapse the range to the end
+      selection.removeAllRanges(); // Remove all ranges
+      selection.addRange(range); // Add the new range
+      element.focus(); // Focus the element
+    }
+
+    // Insert the initial paragraph and focus the editor
+    insertInitialParagraph();
+    editor.focus();
+
+    function insertInitialParagraph() {
+      const paragraph = document.createElement('p');
+      paragraph.classList.add('active');
+      paragraph.textContent = '\u200B'; // Zero-width space to ensure the paragraph is visible
+      editor.appendChild(paragraph);
+    }
+
+    async function getAutocompleteText() {
+      return "generated text will go here. ";
+    }
+
+    // Function to handle command key for autocomplete
+    let commandPressed = false;
+    document.addEventListener('keydown', async (e) => {
+      if (e.key === 'Meta') {
+        e.preventDefault(); // Prevent the default behavior
+        commandPressed = true;
+        await showAutocomplete();
+      } else if (e.key === 'Enter' && commandPressed) {
+        confirmAutocomplete();
+      } else if (e.key === 'Escape') {
+        cancelAutocomplete();
+      } else if (e.key === 'Backspace' && commandPressed) {
+        deleteAutocomplete();
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.key === 'Meta') {
+        commandPressed = false;
+        hideAutocomplete();
+      }
+    });
+
+    // Show autocomplete suggestion
+    async function showAutocomplete() {
+      const autocompleteText = await getAutocompleteText();
+      const activeParagraph = document.querySelector('.editor p.active');
+      if (activeParagraph) {
+        activeParagraph.innerHTML += `<span class="autocomplete">${autocompleteText}</span>`;
+        setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+      }
+    }
+
+    // Hide autocomplete suggestion
+    function hideAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.remove();
+      });
+    }
+
+    // Confirm autocomplete suggestion
+    function confirmAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.classList.remove('autocomplete');
+        element.style.color = 'inherit';
+      });
+      commandPressed = false;
+    }
+
+    // Delete autocomplete suggestion
+    function deleteAutocomplete() {
+      const autocompleteElements = document.querySelectorAll('.autocomplete');
+      autocompleteElements.forEach(element => {
+        element.remove();
+      });
+    }
+
+    // Cancel autocomplete suggestion
+    function cancelAutocomplete() {
+      deleteAutocomplete();
+      commandPressed = false;
+    }
+  </script>
+</body>
+
+</html>
