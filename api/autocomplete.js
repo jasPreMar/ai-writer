@@ -1,13 +1,10 @@
 // Import the OpenAI library
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
+
+// Instantiate OpenAI client with your API key
+const openai = new OpenAI(process.env.OPENAI_API_KEY);
 
 module.exports = async (req, res) => {
-  // Initialize OpenAI with the environment variable for the API key
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
-
   try {
     // Parse the request body to get the prompt
     const { prompt } = req.body;
