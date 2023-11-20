@@ -203,6 +203,8 @@
 
     async function getAutocompleteText(promptText) {
       try {
+        console.log(promptText); // Log the value of promptText
+
         const response = await fetch('/api/autocomplete', {
           method: 'POST',
           headers: {
@@ -256,7 +258,12 @@
 
     // Show autocomplete suggestion
     async function showAutocomplete() {
-      const autocompleteText = await getAutocompleteText();
+      const paragraphs = document.querySelectorAll('.editor p');
+      let promptText = '';
+      paragraphs.forEach(p => {
+        promptText += p.textContent;
+      });
+      const autocompleteText = await getAutocompleteText(promptText); // Pass promptText as an argument
       const activeParagraph = document.querySelector('.editor p.active');
       if (activeParagraph) {
         activeParagraph.innerHTML += `<span class="autocomplete">${autocompleteText}</span>`;
