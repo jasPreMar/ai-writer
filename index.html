@@ -130,18 +130,8 @@
     });
 
     editor.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !commandPressed) {
-        e.preventDefault(); // Prevent the default enter key behavior
-        const activeParagraph = document.querySelector('.editor p.active');
-        const newParagraph = document.createElement('p');
-        newParagraph.textContent = '\u200B'; // Insert zero-width space
-        if (activeParagraph.nextSibling) {
-          editor.insertBefore(newParagraph, activeParagraph.nextSibling);
-        } else {
-          editor.appendChild(newParagraph);
-        }
-        updateActiveParagraph(newParagraph); // Set the new paragraph to active
-        setCursorToEnd(newParagraph);
+      if (e.key === ' ' && autocompleteRunning) {
+        e.preventDefault(); // Prevent the default action if autocomplete is running
       }
     });
 
@@ -225,26 +215,45 @@
     }
 
 
-    // Function to handle command key for autocomplete
-    let commandPressed = false;
+    // Function to handle spacebar key for autocomplete
+    let autocompleteTimeout = null;
+    let autocompleteRunning = false;
     document.addEventListener('keydown', async (e) => {
-      if (e.key === 'Meta') {
-        e.preventDefault(); // Prevent the default behavior
-        commandPressed = true;
-        await showAutocomplete();
-      } else if (e.key === 'Enter' && commandPressed) {
-        confirmAutocomplete();
-      } else if (e.key === 'Escape') {
-        cancelAutocomplete();
-      } else if (e.key === 'Backspace' && commandPressed) {
-        deleteAutocomplete();
-      }
-    });
+      clearTimeout(autocompleteTimeout); // Reset the timer on each key press
 
-    document.addEventListener('keyup', (e) => {
-      if (e.key === 'Meta') {
-        commandPressed = false;
-        hideAutocomplete();
+      // Check if there is any text on the page present in a span with the class "autocomplete"
+      const autocompleteText = document.querySelector('.autocomplete');
+
+      // Handle autocomplete actions
+      if (autocompleteText) {
+        if (e.key === ' ') {
+          e.preventDefault(); // Prevent the default action if autocomplete is running
+          confirmAutocomplete();
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+          e.preventDefault(); // Prevent the default action if autocomplete is running
+          await showAutocomplete();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+          e.preventDefault(); // Prevent the default action if autocomplete is running
+          deleteAutocomplete();
+        } else {
+          e.preventDefault(); // Prevent the default action if autocomplete is running
+          deleteAutocomplete();
+          // Add the pressed key to the active paragraph
+          const activeParagraph = document.querySelector('.editor p.active');
+          if (activeParagraph) {
+            activeParagraph.textContent += e.key;
+            setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+          }
+        }
+      } else {
+        // Start a new timer after each key press
+        autocompleteTimeout = setTimeout(async () => {
+          if (!autocompleteRunning) {
+            autocompleteRunning = true;
+            await showAutocomplete();
+            autocompleteRunning = false;
+          }
+        }, 3000);
       }
     });
 
@@ -278,21 +287,14 @@
         element.classList.remove('autocomplete');
         element.style.color = 'inherit';
       });
-      commandPressed = false;
     }
 
-    // Delete autocomplete suggestion
+    // Delete the last autocomplete suggestion
     function deleteAutocomplete() {
       const autocompleteElements = document.querySelectorAll('.autocomplete');
       autocompleteElements.forEach(element => {
         element.remove();
       });
-    }
-
-    // Cancel autocomplete suggestion
-    function cancelAutocomplete() {
-      deleteAutocomplete();
-      commandPressed = false;
     }
   </script>
 </body>
