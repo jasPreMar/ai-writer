@@ -40,6 +40,7 @@
       padding: 0 1rem;
       overflow: hidden;
       text-align: left;
+      text-indent: 2px;
       overflow: hidden;
     }
 
@@ -67,11 +68,6 @@
       body {
         background-color: #F7F7F7;
         color: #C6C4C3;
-      }
-
-      .editor {
-        color: #C6C4C3;
-        background-color: #F7F7F7;
       }
 
       .editor p.active {
@@ -131,7 +127,7 @@
 
     editor.addEventListener('keydown', (e) => {
       if (e.key === ' ' && autocompleteRunning) {
-        e.preventDefault(); // Prevent the default action if autocomplete is running
+        e.preventDefault();
       }
     });
 
@@ -221,32 +217,35 @@
     document.addEventListener('keydown', async (e) => {
       clearTimeout(autocompleteTimeout); // Reset the timer on each key press
 
-      // Check if there is any text on the page present in a span with the class "autocomplete"
       const autocompleteText = document.querySelector('.autocomplete');
 
-      // Handle autocomplete actions
       if (autocompleteText) {
-        if (e.key === ' ') {
-          e.preventDefault(); // Prevent the default action if autocomplete is running
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
           confirmAutocomplete();
         } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-          e.preventDefault(); // Prevent the default action if autocomplete is running
+          e.preventDefault();
           await showAutocomplete();
         } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-          e.preventDefault(); // Prevent the default action if autocomplete is running
-          deleteAutocomplete();
+          e.preventDefault();
+          deleteAutocomplete(true); // Delete only the last autocomplete span
+        } else if (e.key === 'Backspace' || e.key === 'Delete') {
+          e.preventDefault();
+          deleteAutocomplete(); // Delete all autocomplete spans
         } else {
-          e.preventDefault(); // Prevent the default action if autocomplete is running
-          deleteAutocomplete();
-          // Add the pressed key to the active paragraph
-          const activeParagraph = document.querySelector('.editor p.active');
-          if (activeParagraph) {
-            activeParagraph.textContent += e.key;
-            setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+          e.preventDefault();
+          if (!['Shift', 'Meta', 'Alt', 'Control', 'Escape'].includes(e.key)) {
+            deleteAutocomplete(); // Delete all autocomplete spans
+            const activeParagraph = document.querySelector('.editor p.active');
+            if (activeParagraph) {
+              activeParagraph.textContent += e.key; // Add the pressed character
+              setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+            }
+          } else {
+            deleteAutocomplete(); // Delete all autocomplete spans
           }
         }
       } else {
-        // Start a new timer after each key press
         autocompleteTimeout = setTimeout(async () => {
           if (!autocompleteRunning) {
             autocompleteRunning = true;
@@ -287,15 +286,68 @@
         element.classList.remove('autocomplete');
         element.style.color = 'inherit';
       });
+
+      // Start a new timer after confirming the autocomplete
+      autocompleteTimeout = setTimeout(async () => {
+        if (!autocompleteRunning) {
+          autocompleteRunning = true;
+          await showAutocomplete();
+          autocompleteRunning = false;
+        }
+      }, 1000);
     }
 
     // Delete the last autocomplete suggestion
-    function deleteAutocomplete() {
+    function deleteAutocomplete(onlyLast = false) {
       const autocompleteElements = document.querySelectorAll('.autocomplete');
-      autocompleteElements.forEach(element => {
-        element.remove();
-      });
+      if (onlyLast && autocompleteElements.length > 0) {
+        autocompleteElements[autocompleteElements.length - 1].remove();
+      } else {
+        autocompleteElements.forEach(element => {
+          element.remove();
+        });
+      }
     }
+
+    let startY = 0;
+    let endY = 0;
+
+    // Listen for the touchstart event
+    document.addEventListener('touchstart', function(e) {
+      startY = e.touches[0].clientY;
+    }, false);
+
+    // Listen for the touchmove event
+    document.addEventListener('touchmove', function(e) {
+      endY = e.touches[0].clientY;
+      const distance = startY - endY;
+
+      // Check if the user is at the bottom of the page
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+        // Calculate the number of blocks to add based on the swipe distance
+        const numBlocks = Math.floor(distance / 100); // Adjust the divisor as needed
+
+        // Add blocks to the active paragraph
+        const activeParagraph = document.querySelector('.editor p.active');
+        for (let i = 0; i < numBlocks; i++) {
+          const block = document.createElement('span');
+          block.className = 'autocomplete';
+          block.textContent = '▬ ▬ ▬ ▬ ▬ ';
+          activeParagraph.appendChild(block);
+        }
+      }
+    }, false);
+
+    // Listen for the touchend event
+    document.addEventListener('touchend', function() {
+      // Call the autocomplete function for each block
+      const blocks = document.querySelectorAll('.autocomplete');
+      blocks.forEach(block => {
+        getAutocompleteText().then(text => {
+          block.textContent = text;
+        });
+      });
+    }, false);
   </script>
 </body>
 
