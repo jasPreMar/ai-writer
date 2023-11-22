@@ -84,8 +84,20 @@
 
 <body>
 
-  <div id="editor" class="editor" contenteditable="true">
-    <!-- Dynamic content will be inserted here -->
+  <div id="ptr">
+    <!-- Pull down arrow indicator -->
+    <span class="genericon genericon-next"></span>
+    <!-- CSS-based loading indicator -->
+    <div class="loading">
+      <span id="l1"></span>
+      <span id="l2"></span>
+      <span id="l3"></span>
+    </div>
+  </div>
+  <div id="content">
+    <div id="editor" class="editor" contenteditable="true">
+      <!-- Dynamic content will be inserted here -->
+    </div>
   </div>
 
   <script>
@@ -234,7 +246,7 @@
           deleteAutocomplete(); // Delete all autocomplete spans
         } else {
           e.preventDefault();
-          if (!['Shift', 'Meta', 'Alt', 'Control', 'Escape'].includes(e.key)) {
+          if (!['Shift', 'Meta', 'Alt', 'Control', 'Escape', 'Tab', 'CapsLock', 'F1', 'F2', 'F3', 'F4', 'F5', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'].includes(e.key)) {
             deleteAutocomplete(); // Delete all autocomplete spans
             const activeParagraph = document.querySelector('.editor p.active');
             if (activeParagraph) {
@@ -308,47 +320,12 @@
         });
       }
     }
-
-    let startY = 0;
-    let endY = 0;
-
-    // Listen for the touchstart event
-    document.addEventListener('touchstart', function(e) {
-      startY = e.touches[0].clientY;
-    }, false);
-
-    // Listen for the touchmove event
-    document.addEventListener('touchmove', function(e) {
-      endY = e.touches[0].clientY;
-      const distance = startY - endY;
-
-      // Check if the user is at the bottom of the page
-      if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
-        // Calculate the number of blocks to add based on the swipe distance
-        const numBlocks = Math.floor(distance / 100); // Adjust the divisor as needed
-
-        // Add blocks to the active paragraph
-        const activeParagraph = document.querySelector('.editor p.active');
-        for (let i = 0; i < numBlocks; i++) {
-          const block = document.createElement('span');
-          block.className = 'autocomplete';
-          block.textContent = '▬ ▬ ▬ ▬ ▬ ';
-          activeParagraph.appendChild(block);
-        }
-      }
-    }, false);
-
-    // Listen for the touchend event
-    document.addEventListener('touchend', function() {
-      // Call the autocomplete function for each block
-      const blocks = document.querySelectorAll('.autocomplete');
-      blocks.forEach(block => {
-        getAutocompleteText().then(text => {
-          block.textContent = text;
-        });
-      });
-    }, false);
   </script>
 </body>
 
 </html>
+
+
+
+
+
