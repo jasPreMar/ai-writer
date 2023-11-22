@@ -264,7 +264,7 @@
             await showAutocomplete();
             autocompleteRunning = false;
           }
-        }, 1000);
+        }, 2000);
       }
     });
 
@@ -278,8 +278,20 @@
       const autocompleteText = await getAutocompleteText(promptText); // Pass promptText as an argument
       const activeParagraph = document.querySelector('.editor p.active');
       if (activeParagraph) {
+        // Save the current caret position
+        const selection = window.getSelection();
+        const range = selection.getRangeAt(0);
+        const caretPos = range.startOffset;
+
+        // Add the autocomplete text
         activeParagraph.innerHTML += `<span class="autocomplete">${autocompleteText}</span>`;
-        setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
+
+        // Restore the caret position
+        const newRange = document.createRange();
+        newRange.setStart(activeParagraph.firstChild, caretPos);
+        newRange.collapse(true);
+        selection.removeAllRanges();
+        selection.addRange(newRange);
       }
     }
 
@@ -324,8 +336,3 @@
 </body>
 
 </html>
-
-
-
-
-
