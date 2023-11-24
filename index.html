@@ -60,7 +60,7 @@
     }
 
     .autocomplete {
-      color: rgba(112, 112, 112, 0.5);
+      color: #D4C1F9;
     }
 
     /* Light Mode styles */
@@ -75,7 +75,7 @@
       }
 
       .autocomplete {
-        color: rgba(0, 0, 0, 0.5);
+        color: #D4C1F9;
       }
     }
   </style>
@@ -231,40 +231,22 @@
 
       const autocompleteText = document.querySelector('.autocomplete');
 
-      if (autocompleteText) {
-        if (e.key === ' ' || e.key === 'Enter') {
-          e.preventDefault();
-          confirmAutocomplete();
-        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
-          e.preventDefault();
-          await showAutocomplete();
-        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
-          e.preventDefault();
-          deleteAutocomplete(true); // Delete only the last autocomplete span
-        } else if (e.key === 'Backspace' || e.key === 'Delete') {
-          e.preventDefault();
-          deleteAutocomplete(); // Delete all autocomplete spans
-        } else {
-          e.preventDefault();
-          if (!['Shift', 'Meta', 'Alt', 'Control', 'Escape', 'Tab', 'CapsLock', 'F1', 'F2', 'F3', 'F4', 'F5', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'].includes(e.key)) {
-            deleteAutocomplete(); // Delete all autocomplete spans
-            const activeParagraph = document.querySelector('.editor p.active');
-            if (activeParagraph) {
-              activeParagraph.textContent += e.key; // Add the pressed character
-              setCursorToEnd(activeParagraph); // Set the cursor to the end of the paragraph
-            }
-          } else {
-            deleteAutocomplete(); // Delete all autocomplete spans
-          }
-        }
-      } else {
+      if (e.key === ' ') { // Check if the pressed key is spacebar
         autocompleteTimeout = setTimeout(async () => {
           if (!autocompleteRunning) {
             autocompleteRunning = true;
             await showAutocomplete();
             autocompleteRunning = false;
           }
-        }, 2000);
+        }, 300);
+      } else if (autocompleteText && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) {
+        e.preventDefault();
+        await showAutocomplete();
+      } else if (e.key === 'Tab') { // Check if the pressed key is 'Tab'
+        e.preventDefault();
+        confirmAutocomplete();
+      } else if (autocompleteText) { // If autocomplete text is shown and the pressed key is not 'Tab'
+        hideAutocomplete();
       }
     });
 
@@ -288,7 +270,7 @@
 
         // Restore the caret position
         const newRange = document.createRange();
-        newRange.setStart(activeParagraph.firstChild, caretPos);
+        newRange.setStart(activeParagraph.childNodes[0], caretPos);
         newRange.collapse(true);
         selection.removeAllRanges();
         selection.addRange(newRange);
@@ -307,9 +289,26 @@
     function confirmAutocomplete() {
       const autocompleteElements = document.querySelectorAll('.autocomplete');
       autocompleteElements.forEach(element => {
-        element.classList.remove('autocomplete');
-        element.style.color = 'inherit';
+        // Create a text node with the same content as the autocomplete element
+        const textNode = document.createTextNode(element.textContent);
+
+        // Replace the autocomplete element with the text node
+        element.parentNode.replaceChild(textNode, element);
+
+        // Move the caret to the end of the text node
+        const newRange = document.createRange();
+        newRange.setStart(textNode, textNode.length);
+        newRange.collapse(true);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(newRange);
       });
+
+      // Move the cursor to the end of the active paragraph
+      const activeParagraph = document.querySelector('.editor p.active');
+      if (activeParagraph) {
+        setCursorToEnd(activeParagraph);
+      }
 
       // Start a new timer after confirming the autocomplete
       autocompleteTimeout = setTimeout(async () => {
